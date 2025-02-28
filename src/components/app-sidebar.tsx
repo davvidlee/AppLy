@@ -1,4 +1,5 @@
 import { Calendar, ChartBarBig, File, Home, Inbox, Search, Settings } from "lucide-react"
+import { Link } from "react-router-dom"; // ✅ Import Link
 
 import {
   Sidebar,
@@ -15,17 +16,17 @@ import {
 const items = [
   {
     title: "Dashboard",
-    url: "@/dashboard/page",
+    url: "/dashboard/page",
     icon: ChartBarBig,
   },
   {
     title: "Applications",
-    url: "@/applications/page",
+    url: "/applications/page",
     icon: File,
   },
   {
     title: "Calendar",
-    url: "@/calendar/page",
+    url: "/calendar/page",
     icon: Calendar,
   },
   {
