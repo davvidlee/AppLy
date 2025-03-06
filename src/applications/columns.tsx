@@ -38,10 +38,6 @@ export const columns: ColumnDef<Application>[] = [
     header: "Status",
   },
   {
-    accessorKey: "desc",
-    header: "Description",
-  },
-  {
     accessorKey: "date",
     header: ({ column }) => {
       return (
@@ -57,16 +53,20 @@ export const columns: ColumnDef<Application>[] = [
   },
   {
     accessorKey: "salary",
-    header: () => <div className="text-right">Salary</div>,
+    header: () => <div className="">Salary</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const amount = parseFloat(row.getValue("salary"))
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
       }).format(amount)
  
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="font-medium">{formatted}</div>
     },
+  },
+  {
+    accessorKey: "desc",
+    header: "Description",
   },
   {
     id: "actions",

@@ -1,18 +1,19 @@
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from "amazon-cognito-identity-js";
 import { cognitoConfig } from "./cognitoConfig";
 
-const userPool = new CognitoUserPool({
+export const userPool = new CognitoUserPool({
   UserPoolId: cognitoConfig.userPoolId,
   ClientId: cognitoConfig.clientId,
 });
 
-export async function signUpUser(username: string, password: string, email: string) {
+export async function signUpUser(fullName: string, email: string, password: string) {
   return new Promise((resolve, reject) => {
     const attributes = [
       new CognitoUserAttribute({ Name: "email", Value: email }),
+      new CognitoUserAttribute({ Name: "name", Value: fullName }), // Store full name as an attribute
     ];
 
-    userPool.signUp(username, password, attributes, [], (err, result) => {
+    userPool.signUp(email, password, attributes, [], (err, result) => {
       if (err) {
         reject(err);
       } else {
@@ -22,10 +23,10 @@ export async function signUpUser(username: string, password: string, email: stri
   });
 }
 
-export async function loginUser(username: string, password: string): Promise<string> {
+export async function loginUser(email: string, password: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const user = new CognitoUser({ Username: username, Pool: userPool });
-    const authDetails = new AuthenticationDetails({ Username: username, Password: password });
+    const user = new CognitoUser({ Username: email, Pool: userPool }); // Use email as username
+    const authDetails = new AuthenticationDetails({ Username: email, Password: password });
 
     user.authenticateUser(authDetails, {
       onSuccess: (result) => {

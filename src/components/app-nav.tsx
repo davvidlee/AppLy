@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   NavigationMenu,
@@ -9,8 +10,23 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { getUserAttributes } from "@/api";
 
 export function AppNav() {
+  const [firstName, setFirstName] = useState("");
+  useEffect(() => {
+    async function fetchUser(){
+      let temp = await getUserAttributes();
+      if (temp?.name) {
+        const firstNameExtracted = temp.name.split(" ")[0] ?? ""; // Ensure it's never undefined
+        setFirstName(firstNameExtracted);
+      }
+    }
+    
+    fetchUser();
+  }, []);
+  console.log(firstName)
+
   return (
     <div className="fixed top-0 left-0 w-full h-16 bg-white shadow-md z-50 flex items-center px-16">
       {/* Left: Logo */}
@@ -58,7 +74,9 @@ export function AppNav() {
       </NavigationMenuList>
     </NavigationMenu>
     </div>
-    <div className="w-1/3"></div>
+    <div className="flex w-1/3 justify-end">
+        {firstName.toUpperCase()}
+      </div>
     </div>
   );
 }
