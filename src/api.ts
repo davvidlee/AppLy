@@ -2,9 +2,9 @@ import { Application } from "./applications/columns";
 import { CognitoUser } from "amazon-cognito-identity-js";
 import { userPool } from "./auth/auth"; // Import your Cognito user pool
 import { fetchUserAttributes, fetchAuthSession, FetchUserAttributesOutput } from "aws-amplify/auth";
+import axios from "axios";
 
 const API_URL = "https://exoilvbze7.execute-api.us-east-2.amazonaws.com/dev/applications";
-
 export async function getUserAttributes(): Promise<FetchUserAttributesOutput | null> {
   try {
     const attributes = await fetchUserAttributes();
@@ -16,33 +16,47 @@ export async function getUserAttributes(): Promise<FetchUserAttributesOutput | n
   }
 }
 
-export async function fetchApplications(): Promise<Application[]> {
+// export async function fetchApplications(): Promise<Application[]> {
+//   try {
+//     // Get the authenticated user
+//     const session = await fetchAuthSession();
+//     const token = session.tokens?.idToken?.toString();
+
+//     if (!token) {
+//       throw new Error("No authentication token found.");
+//     }
+//     console.log(token)
+//     // Fetch applications from API Gateway
+//     const response = await fetch(API_URL, {
+//       method: "GET",
+//       headers: {
+//         "Authorization": `Bearer ${token}`, // Ensure token is correctly formatted
+//         "Content-Type": "application/json",
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`Error fetching applications: ${response.statusText}`);
+//     }
+
+//     const data: Application[] = await response.json();
+//     return data;
+//   } catch (error) {
+//     console.error("Failed to fetch applications:", error);
+//     return []; // Return an empty list if there's an error
+//   }
+// }
+
+export async function fetchApplications() {
   try {
-    // Get the authenticated user
-    const session = await fetchAuthSession();
-    const token = session.tokens?.idToken?.toString();
+    const response = await axios.get(API_URL);
+    const userAttributes: FetchUserAttributesOutput | null = await fetchUserAttributes();
+    const userSub = userAttributes['sub'];
 
-    if (!token) {
-      throw new Error("No authentication token found.");
-    }
-
-    // Fetch applications from API Gateway
-    const response = await fetch(API_URL, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`, // Ensure token is correctly formatted
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error fetching applications: ${response.statusText}`);
-    }
-
-    const data: Application[] = await response.json();
-    return data;
+    const data = {...response}
+    return response.data[0]['applications'];
   } catch (error) {
-    console.error("Failed to fetch applications:", error);
-    return []; // Return an empty list if there's an error
+    console.error("Error fetching applications:", error);
+    return [];
   }
 }
