@@ -20,9 +20,16 @@ export default function Applications() {
       }
     }
     async function loadData() {
-      const applications = await fetchApplications();
-      setData(applications);
-      setLoading(false);
+      const cachedData = localStorage.getItem("applications");
+      if (cachedData) {
+        setData(JSON.parse(cachedData));
+        setLoading(false);
+      } else {
+        const applications = await fetchApplications();
+        localStorage.setItem("applications", JSON.stringify(applications)); // Store data in cache
+        setData(applications);
+        setLoading(false);
+      }
     }
     loadUser()
     loadData();

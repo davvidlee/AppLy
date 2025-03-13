@@ -11,9 +11,20 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { getUserAttributes } from "@/api";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { logoutUser } from "@/auth/auth";
+import { useNavigate } from "react-router-dom";
 
 export function AppNav() {
   const [firstName, setFirstName] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     async function fetchUser(){
       let temp = await getUserAttributes();
@@ -74,8 +85,19 @@ export function AppNav() {
       </NavigationMenuList>
     </NavigationMenu>
     </div>
-    <div className="flex w-1/3 justify-end">
-        {firstName.toUpperCase()}
+    <div className='flex w-1/3 justify-end'>
+      <DropdownMenu>
+        <DropdownMenuTrigger >{firstName.toUpperCase()}</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {
+            logoutUser();
+            navigate("/login"); // Redirect user to login after logout
+          }}>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       </div>
     </div>
   );

@@ -25,12 +25,12 @@ export default function App() {
 
   const hideNavPages = ["/login", "/signup", "/verify"];
   const showNav = !hideNavPages.includes(location.pathname);
-
+  console.log(showNav)
   return (
     <div className="h-screen flex flex-col">
       {showNav && <AppNav />}
 
-      <div className="flex-1 overflow-y-auto relative pt-20">
+      <div className={`flex-1 overflow-y-auto relative ${showNav ? "mt-[70px]" : ""}`}>
         <Routes>
           <Route path="/" element={auth ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />

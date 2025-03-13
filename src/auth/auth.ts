@@ -39,3 +39,11 @@ export async function loginUser(email: string, password: string): Promise<string
     });
   });
 }
+
+export function logoutUser() {
+  const user = userPool.getCurrentUser();
+  if (user) {
+    user.signOut();
+  }
+  localStorage.removeItem("token"); // Clear stored token (if used)
+}

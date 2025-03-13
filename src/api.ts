@@ -55,3 +55,18 @@ export async function addApplication(userID: string, application: any) {
     throw new Error("Failed to add application");
   }
 }
+
+export async function deleteApplication(userID: string, application: any) {
+  try {
+    // console.log(userID);
+    const response = await axios.delete(API_URL, {
+      data: { userID, application },
+      headers: { "Content-Type": "application/json" },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Error adding application:", error);
+    throw new Error("Failed to add application");
+  }
+}
